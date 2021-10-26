@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 03 Okt 2021 pada 16.23
--- Versi server: 10.4.20-MariaDB
--- Versi PHP: 8.0.9
+-- Generation Time: Oct 26, 2021 at 03:31 PM
+-- Server version: 10.4.21-MariaDB
+-- PHP Version: 7.4.23
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `film`
+-- Table structure for table `film`
 --
 
 CREATE TABLE `film` (
@@ -39,7 +39,7 @@ CREATE TABLE `film` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 
 --
--- Dumping data untuk tabel `film`
+-- Dumping data for table `film`
 --
 
 INSERT INTO `film` (`id`, `tgl_tayang`, `nama`, `genre_id`, `thumbnail`, `description`, `harga`, `durasi`) VALUES
@@ -51,7 +51,7 @@ INSERT INTO `film` (`id`, `tgl_tayang`, `nama`, `genre_id`, `thumbnail`, `descri
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `genre`
+-- Table structure for table `genre`
 --
 
 CREATE TABLE `genre` (
@@ -60,7 +60,7 @@ CREATE TABLE `genre` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 
 --
--- Dumping data untuk tabel `genre`
+-- Dumping data for table `genre`
 --
 
 INSERT INTO `genre` (`id`, `nama`) VALUES
@@ -70,7 +70,20 @@ INSERT INTO `genre` (`id`, `nama`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `keranjang`
+-- Table structure for table `jadwal`
+--
+
+CREATE TABLE `jadwal` (
+  `id` int(11) NOT NULL,
+  `waktu_mulai` timestamp NULL DEFAULT NULL,
+  `waktu_selesai` timestamp NULL DEFAULT NULL,
+  `id_film` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `keranjang`
 --
 
 CREATE TABLE `keranjang` (
@@ -81,7 +94,7 @@ CREATE TABLE `keranjang` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 
 --
--- Dumping data untuk tabel `keranjang`
+-- Dumping data for table `keranjang`
 --
 
 INSERT INTO `keranjang` (`id`, `uniqid`, `tiket_id`, `user_id`) VALUES
@@ -93,12 +106,15 @@ INSERT INTO `keranjang` (`id`, `uniqid`, `tiket_id`, `user_id`) VALUES
 (17, NULL, 16, 12),
 (18, NULL, 17, 13),
 (19, NULL, 18, 13),
-(20, NULL, 19, 15);
+(20, NULL, 19, 15),
+(21, NULL, 20, 11),
+(22, NULL, 21, 11),
+(23, NULL, 22, 11);
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `kursi`
+-- Table structure for table `kursi`
 --
 
 CREATE TABLE `kursi` (
@@ -107,22 +123,23 @@ CREATE TABLE `kursi` (
   `abjad` varchar(255) DEFAULT NULL,
   `kelas_studio` int(11) DEFAULT NULL COMMENT '\r\n1:standar,2:premium, 3: max movie',
   `tersedia` int(11) DEFAULT NULL COMMENT '1: true',
-  `last_cart` datetime DEFAULT NULL COMMENT '>30m exp'
+  `last_cart` datetime DEFAULT NULL COMMENT '>30m exp',
+  `id_jadwal` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 
 --
--- Dumping data untuk tabel `kursi`
+-- Dumping data for table `kursi`
 --
 
-INSERT INTO `kursi` (`id`, `nomor_kursi`, `abjad`, `kelas_studio`, `tersedia`, `last_cart`) VALUES
-(1, '1', 'A', 1, 0, '2021-10-03 20:47:03'),
-(3, '2', 'A', 1, 0, '2021-10-03 20:47:03'),
-(4, '12', 'B', 1, 0, '2021-10-03 21:01:36');
+INSERT INTO `kursi` (`id`, `nomor_kursi`, `abjad`, `kelas_studio`, `tersedia`, `last_cart`, `id_jadwal`) VALUES
+(1, '1', 'A', 1, 0, '2021-10-03 20:47:03', 0),
+(3, '2', 'A', 1, 0, '2021-10-03 20:47:03', 0),
+(4, '12', 'B', 1, 0, '2021-10-03 21:01:36', 0);
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `tiket`
+-- Table structure for table `tiket`
 --
 
 CREATE TABLE `tiket` (
@@ -136,7 +153,7 @@ CREATE TABLE `tiket` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 
 --
--- Dumping data untuk tabel `tiket`
+-- Dumping data for table `tiket`
 --
 
 INSERT INTO `tiket` (`id`, `atas_nama`, `nomor_hp`, `transaksi_id`, `film_id`, `kursi_id`, `is_cart`) VALUES
@@ -150,12 +167,15 @@ INSERT INTO `tiket` (`id`, `atas_nama`, `nomor_hp`, `transaksi_id`, `film_id`, `
 (16, 'kahfi', '085162614639', 19, 2, 3, 0),
 (17, 'nisaani', '088888888888', 20, 9, 1, 0),
 (18, 'nisaani', '088888888888', 20, 2, 3, 0),
-(19, 'user', '00000000000', 21, 2, 4, 0);
+(19, 'user', '00000000000', 21, 2, 4, 0),
+(20, 'kholiqul', '082244007536', NULL, 8, 0, 1),
+(21, 'kholiqul', '082244007536', NULL, 2, 0, 1),
+(22, 'kholiqul', '082244007536', NULL, 9, 0, 1);
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `transaksi`
+-- Table structure for table `transaksi`
 --
 
 CREATE TABLE `transaksi` (
@@ -170,12 +190,12 @@ CREATE TABLE `transaksi` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 --
--- Dumping data untuk tabel `transaksi`
+-- Dumping data for table `transaksi`
 --
 
 INSERT INTO `transaksi` (`id`, `nomor_transaksi`, `tgl_transaksi`, `total`, `metode_bayar`, `telah_dibayar`, `user_id`, `bukti_bayar`) VALUES
-(17, 'TX/10/2021/0000', '2021-10-02', 30000, 2, 0, 10, '6157ae0d320bb6157ae0d320c7.jpg'),
-(18, 'TX/10/2021/0017', '2021-10-03', 30000, 1, 0, 11, NULL),
+(17, 'TX/10/2021/0000', '2021-10-02', 30000, 2, 1, 10, '6157ae0d320bb6157ae0d320c7.jpg'),
+(18, 'TX/10/2021/0017', '2021-10-03', 30000, 1, 1, 11, '61643635da24161643635da24c.jpg'),
 (19, 'TX/10/2021/0018', '2021-10-03', 60000, 2, 0, 12, NULL),
 (20, 'TX/10/2021/0019', '2021-10-03', 60000, 2, 1, 13, '6159b476aff896159b476aff8d.png'),
 (21, 'TX/10/2021/0020', '2021-10-03', 30000, 2, 1, 15, '6159b7e7eb53c6159b7e7eb54b.png');
@@ -183,7 +203,7 @@ INSERT INTO `transaksi` (`id`, `nomor_transaksi`, `tgl_transaksi`, `total`, `met
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `user`
+-- Table structure for table `user`
 --
 
 CREATE TABLE `user` (
@@ -198,12 +218,12 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 
 --
--- Dumping data untuk tabel `user`
+-- Dumping data for table `user`
 --
 
 INSERT INTO `user` (`id`, `name`, `email`, `password`, `alamat`, `nomor_ktp`, `nomor_hp`, `role`) VALUES
 (10, 'Customer', 'customer@gmail.com', 'e10adc3949ba59abbe56e057f20f883e', NULL, NULL, '081249118805', 3),
-(11, 'kholiqul', 'kholiqcaem@gmail.com', 'e9c3046e31439f2018e964b7a7118468', NULL, NULL, '082244007536', 1),
+(11, 'kholiqul', 'kholiqcaem@gmail.com', 'e9c3046e31439f2018e964b7a7118468', NULL, NULL, '082244007536', 3),
 (12, 'kahfi', 'kahfi@gmail.com', '64d2753197ba92f6fe30371c52d1b824', NULL, NULL, '085162614639', 3),
 (13, 'nisaani', 'nisa.ani@gmail.com', 'e9c3046e31439f2018e964b7a7118468', NULL, NULL, '088888888888', 3),
 (14, 'admin', 'admin@email.com', '9ed5429ac4129c33c8b366145e582e29', NULL, NULL, '00000000000', 1),
@@ -214,37 +234,45 @@ INSERT INTO `user` (`id`, `name`, `email`, `password`, `alamat`, `nomor_ktp`, `n
 --
 
 --
--- Indeks untuk tabel `film`
+-- Indexes for table `film`
 --
 ALTER TABLE `film`
   ADD PRIMARY KEY (`id`) USING BTREE;
 
 --
--- Indeks untuk tabel `genre`
+-- Indexes for table `genre`
 --
 ALTER TABLE `genre`
   ADD PRIMARY KEY (`id`) USING BTREE;
 
 --
--- Indeks untuk tabel `keranjang`
+-- Indexes for table `jadwal`
+--
+ALTER TABLE `jadwal`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `film_referencekey` (`id_film`);
+
+--
+-- Indexes for table `keranjang`
 --
 ALTER TABLE `keranjang`
   ADD PRIMARY KEY (`id`) USING BTREE;
 
 --
--- Indeks untuk tabel `kursi`
+-- Indexes for table `kursi`
 --
 ALTER TABLE `kursi`
-  ADD PRIMARY KEY (`id`) USING BTREE;
+  ADD PRIMARY KEY (`id`) USING BTREE,
+  ADD KEY `id_jadwal_referencekey` (`id_jadwal`);
 
 --
--- Indeks untuk tabel `tiket`
+-- Indexes for table `tiket`
 --
 ALTER TABLE `tiket`
   ADD PRIMARY KEY (`id`) USING BTREE;
 
 --
--- Indeks untuk tabel `transaksi`
+-- Indexes for table `transaksi`
 --
 ALTER TABLE `transaksi`
   ADD PRIMARY KEY (`id`) USING BTREE,
@@ -252,53 +280,59 @@ ALTER TABLE `transaksi`
   ADD KEY `buku_id` (`tgl_transaksi`) USING BTREE;
 
 --
--- Indeks untuk tabel `user`
+-- Indexes for table `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id`) USING BTREE;
 
 --
--- AUTO_INCREMENT untuk tabel yang dibuang
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT untuk tabel `film`
+-- AUTO_INCREMENT for table `film`
 --
 ALTER TABLE `film`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT untuk tabel `genre`
+-- AUTO_INCREMENT for table `genre`
 --
 ALTER TABLE `genre`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT untuk tabel `keranjang`
+-- AUTO_INCREMENT for table `jadwal`
 --
-ALTER TABLE `keranjang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+ALTER TABLE `jadwal`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `kursi`
+-- AUTO_INCREMENT for table `keranjang`
+--
+ALTER TABLE `keranjang`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+
+--
+-- AUTO_INCREMENT for table `kursi`
 --
 ALTER TABLE `kursi`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT untuk tabel `tiket`
+-- AUTO_INCREMENT for table `tiket`
 --
 ALTER TABLE `tiket`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
--- AUTO_INCREMENT untuk tabel `transaksi`
+-- AUTO_INCREMENT for table `transaksi`
 --
 ALTER TABLE `transaksi`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
--- AUTO_INCREMENT untuk tabel `user`
+-- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
