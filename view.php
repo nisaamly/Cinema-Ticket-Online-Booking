@@ -13,6 +13,17 @@ $id = $_GET['id'];
 $findData = select('film a join genre b on a.genre_id = b.id', 'a.*,b.nama as genre', "a.id = $id");
 foreach ($findData as $film) {
 }
+$jadwal = select('jadwal', 'waktu_mulai, waktu_selesai', 'id_film = ' . $id . '');
+$jadwals = array();
+if($jadwal == true){
+    foreach($jadwal as $datas){
+        array_push($jadwals, $datas);
+    }
+}
+
+$dataNomor = select('film f INNER JOIN jadwal j ON j.id_film = f.id INNER JOIN kursi k ON k.id_jadwal = j.id', '*', 'k.tersedia = 1');
+// $dataNomor = select('jadwal', '*', 'id_film = 2');
+// $dataNomor = false;
 
 ?>
 
@@ -44,19 +55,25 @@ foreach ($findData as $film) {
                 <h1><?= $film['nama']  ?></h1>
                 <div class="row mt-4">
                     <div class="col-2">
-                        <h5>Genre </h5>
-                        <h5>Tanggal </h5>
-                        <h5>Deskripsi </h5>
+                        <h5>Genre : </h5> <br/>
+                        <h5>Jadwal : </h5> <br/>
+                        <?php for ($i=0; $i < count($jadwals); $i++) { ?>
+                            <br/>
+                        <?php } ?>
+                        <h5>Deskripsi : </h5>
                     </div>
                     <div class="col">
-                        <h5><?= $film['genre'] ?></h5>
-                        <h5><?= date('d F Y H:i', strtotime($film['tgl_tayang'])) ?></h5>
+                        <h5><?= $film['genre'] ?></h5><br>
+                        <?php foreach($jadwals as $schedule) { ?>
+                        <h5><?= date('d F Y', strtotime($schedule['waktu_mulai'])) ?> pukul <?= date('H:i', strtotime($schedule['waktu_mulai'])) ?> WIB s.d <?= date('H:i', strtotime($schedule['waktu_selesai'])) ?> WIB</h5>
+                        <?php } ?> <br>
                         <h5><?= $film['description'] ?></h5>
                     </div>
                 </div>
-                <button onclick="pesanFilm()" class="btn btn-success">
-                    Pesan Ticket
+                <button <?= $dataNomor != false ? 'onclick="pesanFilm()"' : 'style="background-color:#e22839"' ?> class="btn btn-success">
+                    <?= $dataNomor != false ? 'Pesan Tiket' : 'Kursi tidak tersedia' ?>
                 </button>
+
             </div>
         </div>
     </div>

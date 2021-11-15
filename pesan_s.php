@@ -14,6 +14,7 @@ $film = $data['film'];
 $nomor = $data['nomor'];
 $abjad = $data['abjad'];
 $kelas = $data['kelas'];
+$jadwal = $data['jadwal'];
 
 $nama = $data['nama'];
 $hp = $data['hp'];

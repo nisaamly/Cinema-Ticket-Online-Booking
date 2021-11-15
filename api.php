@@ -11,6 +11,9 @@ if (isset($_GET['type'])) {
         case 'getKelas':
             getKelas();
             break;
+        case 'getNomor':
+            getNomor();
+            break;
         case 'checkEmail':
             checkEmail();
             break;
@@ -38,6 +41,18 @@ function getKelas()
     $res = [];
     foreach (select('kursi', 'kelas_studio as kelas', "tersedia = 1 and nomor_kursi = '$nomor' and abjad = '$abjad' group by kelas_studio") as $abjad) {
         $abjad['alias'] = getKelasById($abjad['kelas']);
+        $res[] = $abjad;
+    }
+
+    echo json_encode($res);
+}
+
+function getNomor()
+{
+    $kelas = $_GET['kelas'];
+    $res = [];
+    foreach (select('kursi', 'nomor_kursi as nomor', "tersedia = 1 and kelas_studio = '$kelas' group by nomor_kursi") as $abjad) {
+        // $abjad['alias'] = getKelasById($abjad['kelas']);
         $res[] = $abjad;
     }
 

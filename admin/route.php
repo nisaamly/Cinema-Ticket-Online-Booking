@@ -35,6 +35,12 @@ switch ($_GET['r']) {
     case 'kursi_form':
         $file = 'kursi/form.php';
         break;
+    case 'jadwal':
+        $file = 'jadwal/index.php';
+        break; 
+    case 'jadwal_form':
+        $file = 'jadwal/form.php';
+        break; 
 }
 
 if (file_exists($file)) {

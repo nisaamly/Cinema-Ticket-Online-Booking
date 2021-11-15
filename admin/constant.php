@@ -31,6 +31,13 @@ function getKelasById($id)
     return $dataKelas[$key]['nama'];
 }
 
+function getNomorById($id)
+{
+    global $dataNomorId;
+    $key = array_search($id, array_column($dataNomorId, 'id'));
+    return $dataNomorId[$key]['nama'];
+}
+
 function getMethodBayarById($id)
 {
     global $dataMethodBayar;

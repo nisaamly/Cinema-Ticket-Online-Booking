@@ -11,10 +11,10 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 <div class="container pt-4 mb-4">
     <div class="row">
         <div class="col">
-            <h3>Daftar User</h3>
+            <h3>Daftar Admin</h3>
         </div>
         <div class="col-auto">
-            <a href="index.php?r=user_form" class="btn btn-success mb-2 pull-right"> <i class="fa fa-plus"></i> Tambah User</a>
+            <a href="index.php?r=user_form" class="btn btn-success mb-2 pull-right"> <i class="fa fa-plus"></i> Tambah Admin</a>
         </div>
     </div>
     <div class="table-responsive">

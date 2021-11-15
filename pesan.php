@@ -12,16 +12,35 @@ if(!isset($_SESSION['CUST_ID'])){
     die();
 }
 
-$id = $_GET['id'];
-$findData = select('film a join genre b on a.genre_id = b.id', 'a.*,b.nama as genre', "a.id = $id");
-foreach ($findData as $film);
+// var_dump($result);
 
-if (count($film) < 1) {
-    header('Location: index.php');
+$id = $_GET['id'];
+$jadwal = select('jadwal', '*', 'id_film = ' . $id . '');
+// var_dump($result);
+if($jadwal == false){
+    header('Location: error-notfound.php');
+    die();
+}
+// if($jadwal != false){
+//     foreach($jadwal as $schedule){
+//     }
+// }
+$findData = select('film a join genre b on a.genre_id = b.id', 'a.*,b.nama as genre', "a.id = $id");
+if($findData == false){
+    header('Location: error-notfound.php');
     die();
 }
 
-$dataNomor = select('kursi', '*', 'tersedia = 1 AND (TIMESTAMPDIFF(MINUTE,last_cart,NOW()) > 30 or ISNULL(last_cart)) GROUP BY nomor_kursi');
+if($findData != false){
+    foreach ($findData as $film);
+
+    if (count($film) < 1) {
+        header('Location: error-notfound.php');
+        die();
+    }
+}
+
+$dataNomor = select('film f INNER JOIN jadwal j ON j.id_film = f.id INNER JOIN kursi k ON k.id_jadwal = j.id', 'k.nomor_kursi, k.abjad, k.kelas_studio, k.id', 'k.tersedia = 1 AND (TIMESTAMPDIFF(MINUTE, k.last_cart, NOW()) > 30 or ISNULL(k.last_cart)) GROUP BY k.kelas_studio');
 
 $userId = $_SESSION['CUST_ID'];
 $findUser = select('user', "*", "id = $userId");
@@ -67,21 +86,33 @@ foreach ($findUser as $user);
                 <div class="col">
                     <h3>Kursi</h3>
                     <div class="mb-3">
-                        <label class="form-label">Nomor</label>
-                        <select name="nomor" id="nomor" class="form-control">
-                            <option selected disabled>Pilih Nomor</option>
+                        <label class="form-label">Kelas</label>
+                        <select name="kelas" id="kelas" class="form-control">
+                            <option selected disabled>Pilih Kelas Studio</option>
                             <?php foreach ($dataNomor as $nomor) { ?>
-                                <option value="<?= $nomor['nomor_kursi'] ?>"><?= $nomor['nomor_kursi'] ?></option>
+                                <option value="<?= $nomor['kelas_studio'] ?>"><?= $nomor['kelas_studio'] == 1 ? 'Standar' : ($nomor['kelas_studio'] == 2 ? 'Premium' : 'Max Movie') ?></option>
                             <?php } ?>
                         </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nomor</label>
+                        <select name="nomor" id="nomor" class="form-control"></select>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Abjad</label>
                         <select name="abjad" id="abjad" class="form-control"></select>
                     </div>
+                </div>
+                <div class="col">
+                    <h3>Jadwal</h3>
                     <div class="mb-3">
-                        <label class="form-label">Kelas</label>
-                        <select name="kelas" id="kelas" class="form-control"></select>
+                        <label class="form-label">Waktu Tayang</label>
+                        <select name="jadwal" id="jadwal" class="form-control">
+                            <option selected disabled>Pilih Jadwal</option>
+                            <?php foreach ($jadwal as $schedule) { ?>
+                                <option value="<?= $schedule['id'] ?>"><?= date('d F Y', strtotime($schedule['waktu_mulai'])) ?> pukul <?= date('H:i', strtotime($schedule['waktu_mulai'])) ?> WIB s.d <?= date('H:i', strtotime($schedule['waktu_selesai'])) ?> WIB</option>
+                            <?php } ?>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -93,8 +124,26 @@ foreach ($findUser as $user);
 </body>
 
 <script>
+    $('#kelas').change(async function() {
+        // reset('kelas')
+
+        let el = '<option selected disabled>Pilih Nomor</option>';
+        const req = await fetch('api.php?type=getNomor&kelas=' + $(this).val())
+        const res = await req.json()
+        console.log(res);
+
+        if (res.length == 0) {
+            $('#nomor').html('<option selected disabled>Tidak Ada Nomor Kursi Tersedia</option>')
+            return
+        }
+
+        res.map(item => {
+            el += `<option value='${item['nomor']}'>${item['nomor']}</option>`
+        })
+        $('#nomor').html(el)
+    });
     $('#nomor').change(async function() {
-        reset('nomor')
+        // reset('nomor')
 
         let el = '<option selected disabled>Pilih Abjad</option>';
         const req = await fetch('api.php?type=getAbjad&nomor=' + $(this).val())
@@ -111,21 +160,21 @@ foreach ($findUser as $user);
         $('#abjad').html(el)
     });
 
-    $('#abjad').change(async function() {
-        let el = '<option selected disabled>Pilih Kelas</option>';
-        const req = await fetch(`api.php?type=getKelas&abjad=${$(this).val()}&nomor=${$('#nomor').val()}`)
-        const res = await req.json()
+    // $('#abjad').change(async function() {
+    //     let el = '<option selected disabled>Pilih Kelas</option>';
+    //     const req = await fetch(`api.php?type=getKelas&abjad=${$(this).val()}&nomor=${$('#nomor').val()}`)
+    //     const res = await req.json()
 
-        if (res.length == 0) {
-            $('#kelas').html('<option selected disabled>Tidak Ada Kelas Tersedia</option>')
-            return
-        }
+    //     if (res.length == 0) {
+    //         $('#kelas').html('<option selected disabled>Tidak Ada Kelas Tersedia</option>')
+    //         return
+    //     }
 
-        res.map(item => {
-            el += `<option value='${item.kelas}'>${item.alias}</option>`
-        })
-        $('#kelas').html(el)
-    });
+    //     res.map(item => {
+    //         el += `<option value='${item.kelas}'>${item.alias}</option>`
+    //     })
+    //     $('#kelas').html(el)
+    // });
 
 
     function reset(type) {

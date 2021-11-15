@@ -1,7 +1,7 @@
 <?php
 date_default_timezone_set('Asia/Jakarta');
 $servername = "localhost";
-$database = "booking_ticket";
+$database = "ctob";
 $username = "root";
 $password = "";
 

@@ -27,7 +27,14 @@ if (!isset($_SESSION['_uid_'])) {
     <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg==" crossorigin="anonymous" />
-
+<!-- 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet"/> -->
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.3.0/mdb.min.css" rel="stylesheet"/>
+    <script src="jquery.simple-dtpicker.js"></script>
+    <link type="text/css" href="assets/jquery.simple-dtpicker.css" rel="stylesheet" />
     <title>Sistem Informasi Book Tiket</title>
     <style>
         .center-flex {
@@ -64,6 +71,9 @@ if (!isset($_SESSION['_uid_'])) {
                     <li class="nav-item <?php if (isset($_GET['r']) && $_GET['r'] == 'genre') echo 'active' ?>">
                         <a class="nav-link" href="index.php?r=genre"> Genre</a>
                     </li>
+                    <li class="nav-item <?php if (isset($_GET['r']) && $_GET['r'] == 'jadwal') echo 'active' ?>">
+                        <a class="nav-link" href="index.php?r=jadwal"> Jadwal Tayang</a>
+                    </li>
                     <li class="nav-item <?php if (isset($_GET['r']) && $_GET['r'] == 'kursi') echo 'active' ?>">
                         <a class="nav-link" href="index.php?r=kursi"> Kursi</a>
                     </li>
@@ -97,5 +107,15 @@ if (!isset($_SESSION['_uid_'])) {
         </div>
     <?php } ?>
 </body>
+
+<!-- MDB -->
+<script
+  type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.3.0/mdb.min.js"
+></script>
+
+<script src="assets/jquery.simple-dtpicker.js"></script>
+
+
 
 </html>
